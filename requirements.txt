@@ -1,0 +1,4 @@
+# Barry's requirements
+Jinja2
+Pygments
+#argparse - depending on Python version

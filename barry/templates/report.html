@@ -1,0 +1,59 @@
+{% extends "skeleton.html" %}
+
+{% block title %}Report for {{ assignment.title }}{% endblock title %}
+{% block short_title %}{{ assignment.title }}{% endblock short_title %}
+
+{% block body %}
+
+{% set categories = {
+    "complete":     {"class": "text-success",   "icon": "ok"},
+    "partial":      {"class": "text-warning",   "icon": "adjust"},
+    "incomplete":   {"class": "text-error",     "icon": "remove"},
+    "extra":        {"class": "text-info",      "icon": "star"},
+    "skipped":      {"class": "muted",          "icon": "minus"},
+    "problem":      {"class": "text-error",     "icon": "warning-sign"}
+} %}
+
+<div class="row">
+    <div class="span3">
+        <ul class="nav nav-list nav-stacked">
+            {% for name, submission, grade in grades %}
+                <li{% if loop.first %} class="active"{% endif %}>
+                    <a href="#{{ name }}-grade" data-toggle="tab">
+                        {% if grade.category %}
+                            <i class="icon-{{ categories[grade.category].icon }}"></i>
+                        {% endif %}
+                        {{ name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="span9 tab-content">
+        {% for name, submission, grade in grades %}
+            <div id="{{ name }}-grade"
+                 class="tab-pane{% if loop.first %} active{% endif %}">
+                <h2>{{ name }}</h2>
+
+                <ul class="marks unstyled">
+                    {% for category, text in grade.marks %}
+                        <li class="{{ categories[category].class }}">
+                            <i class="icon-{{ categories[category].icon }}"></i>
+                            {{ text }}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                {% for file in grade.files %}
+                    <h3>{{ file.filename }}</h3>
+
+                    {{ file.highlight(pygments) }}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock body %}
+
