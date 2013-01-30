@@ -61,7 +61,7 @@ class GradingSession(object):
     def add_submission(self, name, path):
         if name is None:
             name = os.path.basename(path)
-        sub = Submission(self.assignment, name, path)
+        sub = self.assignment.submission_class(self.assignment, name, path)
         self.submissions[name] = sub
         return sub
 
@@ -72,7 +72,7 @@ class GradingSession(object):
             try:
                 category = self.assignment.grade(submission, grade)
             except StopGrading as exc:
-                grade.add_mark(exc.category, exc.message)
+                grade.add_mark(exc.category, exc.reason)
                 grade.category = exc.category
             except Exception as exc:
                 grade.mark_problem("Grading generated an exception!")

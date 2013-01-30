@@ -30,6 +30,34 @@ SKIPPED = u'skipped'
 PROBLEM = u'problem'
 
 
+class Submission(HasDirectory):
+    """
+    This represents a student submission for the assignment.
+
+    :param assignment: The assignment used to grade this submission.
+    :param name: The name of the student who submitted this assignment.
+    :param directory: The directory the assignment is located in.
+    """
+    def __init__(self, assignment, name, directory):
+        self.assignment = assignment
+        self.name = name
+        self.directory = directory
+
+    def run_command(self, *command, **options):
+        """
+        Run a command in the submission directory, and return the
+        corresponding Popen object.
+        """
+        options.setdefault("directory", self.directory)
+
+        env = dict(RESOURCES=self.assignment.directory)
+        if 'env' in options:
+            env.update(options.get('env'))
+        options['env'] = env
+
+        return run_command(*command, **options)
+
+
 class Assignment(HasDirectory):
     """
     This represents an assignment Barry will grade.
@@ -39,6 +67,10 @@ class Assignment(HasDirectory):
     """
     #: The assignment's title.
     title = None
+
+    #: The class to instantiate for submissions.
+    #: This should probably be a subclass of `Submission`.
+    submission_class = Submission
 
     def __init__(self, directory):
         self.directory = directory
@@ -69,32 +101,4 @@ class Assignment(HasDirectory):
         This should evaluate the submission and attach the appropriate marks.
         """
         pass
-
-
-class Submission(HasDirectory):
-    """
-    This represents a student submission for the assignment.
-
-    :param assignment: The assignment used to grade this submission.
-    :param name: The name of the student who submitted this assignment.
-    :param directory: The directory the assignment is located in.
-    """
-    def __init__(self, assignment, name, directory):
-        self.assignment = assignment
-        self.name = name
-        self.directory = directory
-
-    def run_command(self, *command, **options):
-        """
-        Run a command in the submission directory, and return the
-        corresponding Popen object.
-        """
-        options.setdefault("directory", self.directory)
-
-        env = dict(RESOURCES=self.assignment.directory)
-        if 'env' in options:
-            env.update(options.get('env'))
-        options['env'] = env
-
-        return run_command(*command, **options)
 
