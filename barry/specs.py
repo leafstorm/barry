@@ -43,13 +43,19 @@ class Assignment(HasDirectory):
     def __init__(self, directory):
         self.directory = directory
 
-    def run_command(self, command):
+    def run_command(self, *command, **options):
         """
         Run a command in the resource directory, and return the corresponding
         Popen object.
         """
-        return run_command(command, self.directory,
-                           dict(RESOURCES=self.directory))
+        options.setdefault("directory", self.directory)
+
+        env = dict(RESOURCES=self.directory)
+        if 'env' in options:
+            env.update(options.get('env'))
+        options['env'] = env
+
+        return run_command(*command, **options)
 
     def prepare_resources(self):
         """
@@ -78,11 +84,17 @@ class Submission(HasDirectory):
         self.name = name
         self.directory = directory
 
-    def run_command(self, command):
+    def run_command(self, *command, **options):
         """
         Run a command in the submission directory, and return the
         corresponding Popen object.
         """
-        return run_command(command, self.directory,
-                           dict(RESOURCES=self.assignment.directory))
+        options.setdefault("directory", self.directory)
+
+        env = dict(RESOURCES=self.assignment.directory)
+        if 'env' in options:
+            env.update(options.get('env'))
+        options['env'] = env
+
+        return run_command(*command, **options)
 
