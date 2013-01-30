@@ -76,7 +76,7 @@ class GradingSession(object):
                 grade.category = exc.category
             except Exception as exc:
                 grade.mark_problem("Grading generated an exception!")
-                grade.category = INCOMPLETE
+                grade.category = PROBLEM
                 tb = traceback.format_exc()
                 grade.attach_data("Python Traceback", tb, "pytb")
             else:

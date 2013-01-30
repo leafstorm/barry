@@ -8,6 +8,7 @@ Barry is a Python library for automating assignment grading.
 :copyright: (C) 2013, Matthew Frazier
 :license:   MIT/X11, see LICENSE for details
 """
-from .specs import Assignment, COMPLETE, PARTIAL, INCOMPLETE, EXTRA, SKIPPED
+from .specs import (Assignment,
+                    COMPLETE, PARTIAL, INCOMPLETE, EXTRA, SKIPPED, PROBLEM)
 from .script import grading_session
 
