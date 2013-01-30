@@ -24,7 +24,7 @@ class JavaSubmission(Submission):
         else:
             raise StopGrading(INCOMPLETE, "%s is missing!" % filename)
 
-        javac = self.run_command("javac", "Fibonacci.java")
+        javac = self.run_command("javac", filename)
         if javac.returncode != 0:
             grade.attach_data("Compiler errors", javac.stderr.read())
             raise StopGrading(INCOMPLETE, "%s did not compile!" % filename)
