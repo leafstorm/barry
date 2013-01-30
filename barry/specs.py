@@ -41,7 +41,7 @@ class Submission(HasDirectory):
     def __init__(self, assignment, name, directory):
         self.assignment = assignment
         self.name = name
-        self.directory = directory
+        self.directory = os.path.abspath(directory)
 
     def run_command(self, *command, **options):
         """
@@ -73,7 +73,7 @@ class Assignment(HasDirectory):
     submission_class = Submission
 
     def __init__(self, directory):
-        self.directory = directory
+        self.directory = os.path.abspath(directory)
 
     def run_command(self, *command, **options):
         """
