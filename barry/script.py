@@ -10,6 +10,7 @@ The command-line interface for Barry.
 """
 import argparse
 import os.path
+import progressbar
 from .grading import GradingSession
 from jinja2 import Environment, PackageLoader
 from pygments.formatters import HtmlFormatter
@@ -48,6 +49,16 @@ def grading_session(assignment_class):
     for name in options.names:
         path = os.path.join(options.submissions_dir, name)
         session.add_submission(name, path)
+
+    widgets = ["Grading assignments: ",
+               progressbar.Bar(marker="=", left="[", right="]"),
+               " ", progressbar.SimpleProgress()]
+    pbar = progressbar.ProgressBar(widgets=widgets,
+                                   maxval=len(session.submissions)).start()
+
+    for i, (name, submission, grade) in enumerate(session.all_grades()):
+        pbar.update(i + 1)
+    pbar.finish()
 
     grades = list(session.all_grades())
 
